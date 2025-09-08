@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎲 D&D Dice Roller</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .dice-shadow {
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+    </style>
+</head>
+
+<body
+    class="bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 min-h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-md mx-auto" x-data="diceRoller()">
+        <!-- Main Card -->
+        <div class="bg-white/10 backdrop-blur-lg rounded-2xl dice-shadow p-8 border border-white/20">
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <h1 class="text-4xl font-bold text-white mb-2">
+                    🎲 D&D Dice Roller
+                </h1>
+                <p class="text-white/70 text-sm">
+                    Enter dice notation like 1d20, 2d6+3, or 1d20+2d6
+                </p>
+            </div>
+
+            <!-- Dice Input Form -->
+            <form hx-post="/roll" hx-target="#results" hx-swap="innerHTML" class="mb-6">
+                <div class="relative">
+                    <input type="text" name="dice" placeholder="1d20+5"
+                        class="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent text-lg text-center font-medium"
+                        x-model="diceInput" @keyup.enter="$el.closest('form').querySelector('button').click()"
+                        autocomplete="off">
+                </div>
+                <button type="submit"
+                    class="w-full mt-4 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold py-3 px-6 rounded-lg transform transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg"
+                    :disabled="!diceInput.trim()" :class="!diceInput.trim() ? 'opacity-50 cursor-not-allowed' : ''">
+                    🎲 Roll Dice
+                </button>
+            </form>
+
+            <!-- Results Area -->
+            <div id="results" class="min-h-[80px] flex items-center justify-center">
+                <div class="text-white/50 text-center">
+                    <div class="text-6xl mb-2">🎲</div>
+                    <p class="text-sm">Enter dice notation above and click roll!</p>
+                </div>
+            </div>
+
+            <!-- Quick Examples -->
+            <div class="mt-8 pt-6 border-t border-white/20">
+                <p class="text-white/70 text-xs mb-3 text-center">Quick Examples:</p>
+                <div class="flex flex-wrap gap-2 justify-center">
+                    <button @click="rollExample('1d20')"
+                        class="px-3 py-1 bg-white/10 hover:bg-white/20 text-white/80 text-xs rounded-full transition-colors">
+                        1d20
+                    </button>
+                    <button @click="rollExample('2d6+3')"
+                        class="px-3 py-1 bg-white/10 hover:bg-white/20 text-white/80 text-xs rounded-full transition-colors">
+                        2d6+3
+                    </button>
+                    <button @click="rollExample('4d6')"
+                        class="px-3 py-1 bg-white/10 hover:bg-white/20 text-white/80 text-xs rounded-full transition-colors">
+                        4d6
+                    </button>
+                    <button @click="rollExample('1d100')"
+                        class="px-3 py-1 bg-white/10 hover:bg-white/20 text-white/80 text-xs rounded-full transition-colors">
+                        1d100
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center mt-6">
+            <p class="text-white/50 text-xs">
+                Made with Go, HTMX, and AlpineJS
+            </p>
+        </div>
+    </div>
+
+    <script>
+        function diceRoller() {
+            return {
+                diceInput: '',
+                async rollExample(value) {
+                    this.diceInput = value;
+                    // Wait for Alpine to update the DOM
+                    await this.$nextTick();
+                    // Submit the form normally - HTMX will intercept it
+                    const form = document.querySelector('form[hx-post="/roll"]');
+                    if (form) {
+                        form.requestSubmit();
+                    }
+                }
+            }
+        }
+
+        // Auto-focus input on page load
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelector('input[name="dice"]').focus();
+        });
+    </script>
+</body>
+
+</html>

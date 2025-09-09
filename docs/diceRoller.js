@@ -61,7 +61,7 @@ class DiceRoller {
         }
 
         // Handle modifiers (simple approach: find all +/- numbers not preceded by 'd')
-        const modRegex = /[+-]\d+/g;
+        const modRegex = /[+-]\d(?!d)+/g;
         const allMods = input.match(modRegex) || [];
 
         for (const mod of allMods) {
@@ -88,7 +88,7 @@ class DiceRoller {
         // Use crypto.getRandomValues for secure random numbers
         const array = new Uint32Array(1);
         crypto.getRandomValues(array);
-        
+
         // Convert to range [1, sides]
         return (array[0] % sides) + 1;
     }
@@ -96,10 +96,10 @@ class DiceRoller {
     // Handle form submission
     async handleSubmit(event) {
         event.preventDefault();
-        
+
         const formData = new FormData(event.target);
         const input = formData.get('dice').trim();
-        
+
         if (!input) {
             this.displayResult({
                 error: 'Please enter dice notation'
@@ -114,7 +114,7 @@ class DiceRoller {
     // Display results in the UI
     displayResult(roll) {
         const resultsDiv = document.getElementById('results');
-        
+
         if (roll.error) {
             resultsDiv.innerHTML = `
                 <div class="text-red-500 text-center">
@@ -138,7 +138,7 @@ class DiceRoller {
         const input = document.querySelector('input[name="dice"]');
         input.value = value;
         this.diceInput = value;
-        
+
         // Trigger form submission
         const form = document.querySelector('form');
         if (form) {
@@ -159,7 +159,7 @@ class DiceRoller {
         const input = document.querySelector('input[name="dice"]');
         if (input) {
             input.focus();
-            
+
             // Bind input changes to internal state
             input.addEventListener('input', (e) => {
                 this.diceInput = e.target.value;

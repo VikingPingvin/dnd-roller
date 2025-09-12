@@ -21,21 +21,21 @@ function declineCookies() {
     document.getElementById('cookie-banner').classList.add('hidden');
 }
 
-// function loadGoogleAnalytics() {
-//     // Only load GA if consent given
-//     if (localStorage.getItem('ga-consent') === 'accepted') {
-//         const script = document.createElement('script');
-//         script.async = true;
-//         script.src = 'https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX';
-//         document.head.appendChild(script);
+function loadGoogleAnalytics() {
+    // Only load GA if consent given
+    if (localStorage.getItem('ga-consent') === 'accepted') {
+        const script = document.createElement('script');
+        script.async = true;
+        script.src = 'https://www.googletagmanager.com/gtag/js?id=G-PXPLRH9SYV';
+        document.head.appendChild(script);
 
-//         window.dataLayer = window.dataLayer || [];
-//         function gtag() { dataLayer.push(arguments); }
-//         gtag('js', new Date());
-//         gtag('config', 'G-XXXXXXXXXX');
-//         window.gtag = gtag;
-//     }
-// }
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-PXPLRH9SYV', { 'anonymize_ip': true });
+        window.gtag = gtag;
+    }
+}
 
 // Show banner on page load
 document.addEventListener('DOMContentLoaded', showCookieBanner);
